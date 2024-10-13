@@ -21,6 +21,14 @@ public class SecurityConfig {
 
   private final JwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
+  private static final String[] PERMIT_URL_ARRAY = {
+      "/test",
+      "/api/**",
+      /* swagger v3 */
+      "/v3/api-docs/**",
+      "/api-docs/**",
+      "/swagger-ui/**"
+  };
 
   public SecurityConfig(JwtTokenProvider jwtTokenProvider,
       @Lazy UserDetailsService userDetailsService) { // Lazy 적용
@@ -38,7 +46,7 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/test", "/api/**").permitAll()
+            .requestMatchers(PERMIT_URL_ARRAY).permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userDetailsService),

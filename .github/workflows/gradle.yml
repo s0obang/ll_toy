@@ -34,7 +34,7 @@ jobs:
         cd ./src/main/resources
         touch ./secret.yml
           
-        echo "${{ secrets.secret.yml }}" >> ./secret.yml
+        echo "${{ secrets.SECRET }}" >> ./secret.yml
       shell: bash
           
 

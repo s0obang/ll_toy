@@ -28,3 +28,7 @@ springdoc:
     display-request-duration: true
     operations-sorter: method
 
+aws:
+  s3:
+    bucket: helfoome
+

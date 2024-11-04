@@ -3,8 +3,10 @@ package likelion.practice.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import likelion.practice.dto.MyPageDTO;
 import likelion.practice.dto.UserDTO;
 import likelion.practice.entity.User;
+import likelion.practice.repository.UserRepository;
 import likelion.practice.security.JwtTokenProvider;
 import likelion.practice.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -13,9 +15,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,12 +32,14 @@ public class UserController {
   private final UserService userService;
   private final JwtTokenProvider jwtTokenProvider;
   private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
 
   public UserController(UserService userService, JwtTokenProvider jwtTokenProvider,
-      AuthenticationManager authenticationManager) {
+      AuthenticationManager authenticationManager, UserRepository userRepository) {
     this.userService = userService;
     this.jwtTokenProvider = jwtTokenProvider;
     this.authenticationManager = authenticationManager;
+    this.userRepository = userRepository;
   }
 
   // 회원가입 API
@@ -61,6 +69,24 @@ public class UserController {
 
     } catch (AuthenticationException ex) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password.");
+    }
+  }
+
+  @PostMapping("/isDuplicate")
+  public ResponseEntity<Boolean> isDuplicateUser(@RequestParam String user_id) {
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(userService.idDuplicate(user_id));
+  }
+
+  @GetMapping("/mypage")
+  public ResponseEntity<MyPageDTO> getMyPage(@AuthenticationPrincipal UserDetails userDetails) {
+    String userId = userDetails.getUsername();
+    MyPageDTO myPageDTO = userService.getMyPage(userId);
+    if (myPageDTO == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    } else {
+      return ResponseEntity.ok(myPageDTO);
     }
   }
 }

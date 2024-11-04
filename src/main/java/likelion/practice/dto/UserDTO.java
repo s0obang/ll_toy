@@ -4,9 +4,12 @@ import lombok.Data;
 
 @Data
 public class UserDTO {
-    private String userId;
-    private String password;
-    private String name;
-    private String profileImage; // 프로필 이미지 (옵션)
+
+  private String userId;
+  private String password;
+  private String name;
+  private String email;
+  private String phone;
+  //private String profileImage; // 프로필 이미지 (옵션)
 }
 

@@ -27,7 +27,8 @@ public class SecurityConfig {
       /* swagger v3 */
       "/v3/api-docs/**",
       "/api-docs/**",
-      "/swagger-ui/**"
+      "/swagger-ui/**",
+      "http://16.170.243.189/**"
   };
 
   public SecurityConfig(JwtTokenProvider jwtTokenProvider,
